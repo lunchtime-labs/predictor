@@ -497,20 +497,6 @@ describe Predictor::Base do
       recommender.process!
     end
 
-    it "should call remove_from_set on each item in the set" do
-      expect(recommender.similarities_for(:foo)).to include('bar', 'baz')
-      recommender.anotherinput.items_for(:to_remove).each do |item_to_remove|
-        expect(recommender.anotherinput).to receive(:remove_from_set).with(:to_remove, item_to_remove)
-      end
-      recommender.delete_set_from_matrix!(:anotherinput, :to_remove)
-    end
-
-    it "should delete the set from the matrix" do
-      expect(recommender.anotherinput.items_for(:to_remove)).to include('foo', 'bar')
-      recommender.delete_set_from_matrix!(:anotherinput, :to_remove)
-      expect(recommender.anotherinput.items_for(:to_remove)).to eq([])
-    end
-
     it "should update similarities" do
       expect(recommender.similarities_for(:foo)).to include('bar', 'baz')
       recommender.delete_set_from_matrix!(:anotherinput, :to_remove)
