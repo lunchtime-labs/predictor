@@ -274,7 +274,7 @@ module Predictor::Base
     return self
   end
 
-  def delete_set!(matrix, set)
+  def delete_set_from_matrix!(matrix, set)
     # items whose similarites will need to be re-cached
     items = input_matrices[matrix].items_for(set)
     related_items_by_item = items.each_with_object({}) { |item, memo| memo[item] = related_items(item) }
