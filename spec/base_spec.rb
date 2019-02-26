@@ -515,6 +515,7 @@ describe Predictor::Base do
       expect(recommender.similarities_for(:foo)).to include('bar', 'baz')
       recommender.delete_set!(:anotherinput, :to_remove)
       expect(recommender.similarities_for(:foo)).not_to include('bar')
+      expect(recommender.similarities_for(:foo)).to include('baz')
     end
   end
 

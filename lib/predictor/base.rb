@@ -277,7 +277,7 @@ module Predictor::Base
   def delete_set!(matrix, set)
     # items whose similarites will need to be re-cached
     items = input_matrices[matrix].items_for(set)
-    related_items = items.map(&method(:related_items)).flatten
+    related_items_by_item = items.each_with_object({}) { |item, memo| memo[item] = related_items(item) }
 
     Predictor.redis.watch(redis_key(:items, set)) do
       Predictor.redis.multi do |redis|
@@ -286,9 +286,11 @@ module Predictor::Base
       end
     end
 
-    # re-cache similarities
-    items.each do |item|
-      related_items.each { |related_item| cache_similarity(item, related_item) }
+    # re-cache similarities of all previous set items
+    related_items_by_item.each do |item, related_items|
+      related_items.each do |related_item|
+        cache_similarity(item, related_item)
+      end
     end
 
     self
