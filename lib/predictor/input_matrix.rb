@@ -83,6 +83,17 @@ module Predictor
       end
     end
 
+    # delete set from matrix
+    def delete_set(set)
+      Predictor.redis.watch(redis_key(:items, set)) do
+        items = items_for(set)
+        Predictor.redis.multi do |redis|
+          items.each { |item| remove_from_set(set, item) }
+          redis.del redis_key(:items, set)
+        end
+      end
+    end
+
     def score(item1, item2)
       Distance.send(measure_name, redis_key(:sets, item1), redis_key(:sets, item2), Predictor.redis)
     end

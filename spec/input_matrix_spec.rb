@@ -153,6 +153,26 @@ describe Predictor::InputMatrix do
     end
   end
 
+  describe "delete_set" do
+    before do
+      @matrix.add_to_set(:to_remove, :foo)
+      @matrix.add_to_set(:to_remove, :bar)
+    end
+
+    it "should call remove_from_set on each item in the set" do
+      @matrix.items_for(:to_remove).each do |item_to_remove|
+        expect(@matrix).to receive(:remove_from_set).with(:to_remove, item_to_remove)
+      end
+      @matrix.delete_set(:to_remove)
+    end
+
+    it "should delete the set from the matrix" do
+      expect(@matrix.items_for(:to_remove)).to include('foo', 'bar')
+      @matrix.delete_set(:to_remove)
+      expect(@matrix.items_for(:to_remove)).to eq([])
+    end
+  end
+
   describe "#score" do
     let(:matrix) { Predictor::InputMatrix.new(options) }
 
